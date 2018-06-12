@@ -1,0 +1,1 @@
+C:\Sources\data-forecaster\DataForecaster\bin\Debug\DataForecaster.exe.config
