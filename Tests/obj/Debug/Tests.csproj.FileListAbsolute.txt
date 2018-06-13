@@ -1,0 +1,9 @@
+C:\Sources\data-forecaster\Tests\bin\Debug\Tests.dll
+C:\Sources\data-forecaster\Tests\bin\Debug\Tests.pdb
+C:\Sources\data-forecaster\Tests\bin\Debug\DataForecaster.exe
+C:\Sources\data-forecaster\Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Sources\data-forecaster\Tests\bin\Debug\DataForecaster.pdb
+C:\Sources\data-forecaster\Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
+C:\Sources\data-forecaster\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
+C:\Sources\data-forecaster\Tests\obj\Debug\Tests.dll
+C:\Sources\data-forecaster\Tests\obj\Debug\Tests.pdb
