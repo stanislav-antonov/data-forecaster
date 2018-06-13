@@ -15,6 +15,11 @@ namespace DataForecaster
         public int RowsNumber => _matrix.GetLength(0);
         public int ColsNumber => _matrix.GetLength(1);
 
+        public Matrix(int m, int n)
+        {
+            _matrix = new T[m, n];
+        }
+
         public Matrix(T[,] matrix)
         {
             if (!typeof(T).IsPrimitive)
@@ -56,6 +61,11 @@ namespace DataForecaster
         public Vector<T> GetRowVector(int i)
         {
             return new Vector<T>(GetRow(i));
+        }
+
+        public void InsertColumn(Vector<T> column, int j)
+        {
+            throw new NotImplementedException();
         }
     }
 }
