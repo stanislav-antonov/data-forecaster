@@ -7,6 +7,7 @@ namespace DataForecaster
     //
     internal static class QRDecomposition
     {
+        // https://en.wikipedia.org/wiki/QR_decomposition
         // https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
         // https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process
         public static Tuple<Matrix<double>, Matrix<double>> GramSchmidtProcess(Matrix<double> matrix)
