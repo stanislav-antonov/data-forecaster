@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace DataForecaster
 {
-    internal class Matrix<T> where T : IComparable<T>
+    public class Matrix<T> where T : IComparable<T>
     {
         // m - rows total
         // n - columns total
@@ -29,6 +29,12 @@ namespace DataForecaster
                 throw new ArgumentNullException(nameof(matrix));
 
             _matrix = matrix;
+        }
+
+        public T this[int i, int j]
+        {
+            get { return _matrix[i, j]; }
+            set { _matrix[i, j] = value; }
         }
 
         public T[] GetColumn(int j)
@@ -63,9 +69,20 @@ namespace DataForecaster
             return new Vector<T>(GetRow(i));
         }
 
-        public void InsertColumn(Vector<T> column, int j)
+        public void SetColumn(Vector<T> column, int j)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < RowsNumber; i++)
+            {
+                _matrix[i, j] = column[i];
+            }
+        }
+
+        public void SetRow(Vector<T> row, int i)
+        {
+            for (int j = 0; j < ColsNumber; j++)
+            {
+                _matrix[i, j] = row[j];
+            }
         }
     }
 }

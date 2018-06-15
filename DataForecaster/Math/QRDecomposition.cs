@@ -5,7 +5,7 @@ namespace DataForecaster
     //
     // https://en.wikipedia.org/wiki/QR_decomposition
     //
-    internal static class QRDecomposition
+    public static class QRDecomposition
     {
         // https://en.wikipedia.org/wiki/QR_decomposition
         // https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf
@@ -24,31 +24,45 @@ namespace DataForecaster
             var n = matrix.ColsNumber;
             var m = matrix.RowsNumber;
 
+            var aa = new Vector<double>[n];
+            aa[0] = a0;
+
+            // array of precalculacted ortho vectors
             var ee = new Vector<double>[n];
             ee[0] = e0;
             
             // m x n
             var q = new Matrix<double>(m, n);
-            q.InsertColumn(e0, 0);
+            q.SetColumn(e0, 0);
 
             // n x n
             var r = new Matrix<double>(n, n);
-
+            
+            // iterate through column vectors
             for (int j = 1; j < n; j++)
             {
                 var a = matrix.GetColumnVector(j);
                 var u = a.Clone() as Vector<double>;
 
-                for (int i = 0; i < j; i++)
+                for (int p = 0; p < j; p++)
                 {
-                    double dot = a * ee[i];
-                    u = u - ee[i] * dot;
+                    double dot = a * ee[p];
+                    u = u - ee[p] * dot;
+                    r[p, j] = dot;
                 }
 
                 var e = u / u.Norm();
 
+                aa[j] = a;
                 ee[j] = e;
-                q.InsertColumn(e, j);
+
+                q.SetColumn(e, j);
+            }
+
+            // comlete upper triangle matrix with a main diagonal
+            for (int i = 0, j = 0; j < n; i++, j++)
+            {
+                r[i, j] = aa[j] * ee[j];
             }
 
             return Tuple.Create(q, r);

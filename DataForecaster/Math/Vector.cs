@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace DataForecaster
 {
     public class Vector<T> : IEnumerable<T>, ICloneable where T : IComparable<T>
@@ -25,14 +24,14 @@ namespace DataForecaster
             if (vector == null)
                 throw new ArgumentNullException(nameof(vector));
 
-            _vector = vector;
+            _vector = vector.Clone() as T[];
         }
 
         public T this[int index]
         {
             get { return _vector[index]; }
             set { _vector[index] = value; }
-        }   
+        }
 
         public double Norm()
         {
@@ -97,7 +96,7 @@ namespace DataForecaster
 
         public object Clone()
         {
-            throw new NotImplementedException();
+            return new Vector<T>(_vector);
         }
     }
 }
