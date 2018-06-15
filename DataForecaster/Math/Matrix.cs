@@ -10,7 +10,7 @@ namespace DataForecaster
         // i - row index
         // j - column index
 
-        private readonly T[,] _matrix;
+        private T[,] _matrix;
 
         public int RowsNumber => _matrix.GetLength(0);
         public int ColsNumber => _matrix.GetLength(1);
@@ -84,5 +84,44 @@ namespace DataForecaster
                 _matrix[i, j] = row[j];
             }
         }
+
+        // https://en.wikipedia.org/wiki/Transpose
+        public void Transpose()
+        {
+            int m = RowsNumber;
+            int n = ColsNumber;
+            
+            T[,] transposed = new T[m, n];
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    transposed[i, j] = _matrix[j, i];
+                }
+            }
+
+            _matrix = transposed;
+        }
+
+        // https://mathinsight.org/matrix_vector_multiplication
+        public static Vector<double> operator *(Matrix<T> matrix, Vector<T> vector)
+        {
+            int m = matrix.RowsNumber;
+            int n = matrix.ColsNumber;
+            var result = new Vector<double>(m);
+
+            for (int i = 0; i < m; i++)
+            {
+                double s = 0.0D;
+                for (int j = 0; j < n; j++)
+                {
+                    s += Convert.ToDouble(matrix[i, j]) * Convert.ToDouble(vector[i]);
+                }
+
+                result[i] = s;
+            }
+
+            return result;
+        } 
     }
 }
