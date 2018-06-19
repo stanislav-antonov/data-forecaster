@@ -63,6 +63,9 @@
       <Name>DataForecaster</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="24hWeatherHistory.json" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

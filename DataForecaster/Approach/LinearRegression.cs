@@ -11,7 +11,9 @@ namespace DataForecaster.Approach
     public class LinearRegression
     {
         // https://rstudio-pubs-static.s3.amazonaws.com/251311_c8970d1f1a8541aaa5884d86b1487ea6.html
-        public Vector<double> ComputeOlsCoefficients(Matrix<double> x, Vector<double> y)
+        // x - design matrix (independent input parameters aka predictor variables)
+        // y - vector of observations according to input parameters
+        public Vector<double> ComputeBetas(Matrix<double> x, Vector<double> y)
         {
             var qr = x.GramSchmidtProcess();
 
@@ -22,6 +24,12 @@ namespace DataForecaster.Approach
             var qb = q * y;
 
             return null;
+        }
+
+        // http://reliawiki.org/index.php/Multiple_Linear_Regression_Analysis
+        public void SignificanceTest()
+        {
+
         }
     }
 }
