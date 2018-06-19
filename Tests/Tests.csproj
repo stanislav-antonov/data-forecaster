@@ -52,7 +52,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="QRDecompositionTests.cs" />
+    <Compile Include="MatrixQrDecompositionTests.cs" />
+    <Compile Include="LinearRegressionTests.cs" />
     <Compile Include="VectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

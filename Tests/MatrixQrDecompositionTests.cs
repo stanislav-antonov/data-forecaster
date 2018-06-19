@@ -5,7 +5,7 @@ using DataForecaster;
 namespace Tests
 {
     [TestClass]
-    public class QRDecompositionTests
+    public class MatrixQrDecompositionTests
     {
         [TestMethod]
         public void Common()
