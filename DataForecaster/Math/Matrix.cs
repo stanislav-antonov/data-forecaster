@@ -88,21 +88,21 @@ namespace DataForecaster
         }
 
         // https://en.wikipedia.org/wiki/Transpose
-        public void Transpose()
+        public Matrix<T> Transpose()
         {
             int m = RowsNumber;
             int n = ColsNumber;
             
-            T[,] transposed = new T[m, n];
+            T[,] transposed = new T[n, m];
             for (int i = 0; i < m; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
-                    transposed[i, j] = _matrix[j, i];
+                    transposed[j, i] = _matrix[i, j];
                 }
             }
 
-            _matrix = transposed;
+            return new Matrix<T>(transposed);
         }
 
         // https://mathinsight.org/matrix_vector_multiplication
@@ -138,16 +138,18 @@ namespace DataForecaster
 
         // Use Gaussian elimination approach
         // https://en.wikipedia.org/wiki/Gaussian_elimination
-        public void Inverse()
+        public Matrix<double> Inverse()
         {
             int h = 0, k = 0;
             int m = RowsNumber;
             int n = ColsNumber;
 
-            while (h <= m && k <= n)
+            var inversed = (double[,])Convert.ChangeType(_matrix.Clone(), typeof(double[,]));
+
+            while (h < m && k < n)
             {
-                int iMax = ArgMax(h, m, k);
-                if (Convert.ToDouble(_matrix[iMax, k]) == 0)
+                int iMax = ArgMax(h, m - 1, k, inversed);
+                if (inversed[iMax, k] == 0)
                 {
                     k++;
                 }
@@ -155,30 +157,32 @@ namespace DataForecaster
                 {
                     SwapRows(h, iMax);
 
-                    foreach (var i in Enumerable.Range(h + 1, m))
+                    for (var i = h + 1; i < m; i++)
                     {
-                        double f = Convert.ToDouble(_matrix[i, k]) / Convert.ToDouble(_matrix[h, k]);
-                        _matrix[i, k] = default(T);
+                        double f = inversed[i, k] / inversed[h, k];
+                        inversed[i, k] = 0;
 
-                        foreach (var j in Enumerable.Range(k + 1, n))
+                        for (var j = k + 1; j < n; j++)
                         {
-                            _matrix[i, j] = Convert.ToDouble(_matrix[i, j]) - Convert.ToDouble(_matrix[h, j]) * f;
+                            inversed[i, j] = inversed[i, j] - inversed[h, j] * f;
                         }
                     }
 
-                    h++;
-                    k++;
+                    h++; k++;
                 }
             }
+
+            return new Matrix<double>(inversed);
         }
 
-        private int ArgMax(int iFrom, int iTo, int j)
+        private int ArgMax(int iFrom, int iTo, int j, double[,] matrix)
         {
             var iMax = iFrom;
-            var max = Math.Abs(Convert.ToDouble(_matrix[iMax, j]));
-            foreach (var i in Enumerable.Range(iFrom + 1, iTo))
+            var max = Math.Abs(matrix[iMax, j]);
+
+            for (var i = iFrom + 1; i <= iTo; i++)
             {
-                var candidate = Math.Abs(Convert.ToDouble(_matrix[i, j]));
+                var candidate = Math.Abs(matrix[i, j]);
                 if (candidate > max)
                 {
                     max = candidate;
@@ -188,30 +192,5 @@ namespace DataForecaster
 
             return iMax;
         }
-
-        /*
-            // h := 1 /* Initialization of the pivot row */
-            // k := 1 /* Initialization of the pivot column */
-            // while  h ≤ m and k ≤ n
-            /* Find the k-th pivot: */
-            // i_max := argmax(i = h...m, abs(A[i, k]))
-            // if A[i_max, k] = 0
-            /* No pivot in this column, pass to next column */
-            // k := k+1
-            // else
-            // swap rows(h, i_max)
-            /* Do for all rows below pivot: */
-            // for i = h + 1 ... m:
-            // f := A[i, k] / A[h, k]
-            /* Fill with zeros the lower part of pivot column: */
-            // A[i, k]  := 0
-            /* Do for all remaining elements in current row: */
-            // for j = k + 1 ... n:
-            // A[i, j] := A[i, j] - A[h, j] * f
-            /* Increase pivot row and column */
-            // h := h+1 
-            // k := k+1
-         
-         
     }
 }

@@ -20,10 +20,10 @@ namespace DataForecaster.Approach
             var q = qr.Item1;
             var r = qr.Item2;
 
-            q.Transpose();
-            var qb = q * y;
+            var qb = q.Transpose() * y;
+            var betas = r.Inverse() * qb;
 
-            return null;
+            return betas;
         }
 
         // http://reliawiki.org/index.php/Multiple_Linear_Regression_Analysis
