@@ -20,7 +20,8 @@ namespace DataForecaster.Approach
             var q = qr.Item1;
             var r = qr.Item2;
 
-            var qb = q.Transpose() * y;
+            var qt = q.Transpose();
+            var qb = qt * y;
             var betas = r.Inverse() * qb;
 
             return betas;
