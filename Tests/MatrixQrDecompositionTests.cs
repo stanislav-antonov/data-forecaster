@@ -11,15 +11,13 @@ namespace Tests
         public void Common()
         {
             var matrix = new Matrix<double>(new double[,] {
-                { 12, -51, 4 },
-                { 6, 167, -68 },
-                { -4, 24, -41 },
-                { 15, 90, -4 },
-                { -44, 11, 13 }
+                { -1, -1,  1 },
+                {  1,  3,  3 },
+                { -1, -1,  5 },
+                {  1,  3,  7 },
             });
 
             var result = MatrixQrDecomposition.GramSchmidtProcess(matrix);
-
         }
     }
 }

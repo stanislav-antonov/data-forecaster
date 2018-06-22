@@ -117,7 +117,7 @@ namespace DataForecaster
                 double s = 0.0D;
                 for (int j = 0; j < n; j++)
                 {
-                    s += Convert.ToDouble(matrix[i, j]) * Convert.ToDouble(vector[i]);
+                    s += Convert.ToDouble(matrix[i, j]) * Convert.ToDouble(vector[j]);
                 }
 
                 result[i] = s;

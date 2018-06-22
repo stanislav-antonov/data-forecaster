@@ -15,6 +15,8 @@ namespace DataForecaster.Approach
         // y - vector of observations according to input parameters
         public Vector<double> ComputeBetas(Matrix<double> x, Vector<double> y)
         {
+            // should I add a column of ones at the first position to compute beta0?
+
             var qr = x.GramSchmidtProcess();
 
             var q = qr.Item1;
@@ -22,9 +24,30 @@ namespace DataForecaster.Approach
 
             var qt = q.Transpose();
             var qb = qt * y;
-            var betas = r.Inverse() * qb;
+            var ri = r.Inverse();
+            var betas = ri * qb;
 
             return betas;
+        }
+
+        public Vector<double> Fit(Matrix<double> x, Vector<double> betas)
+        {
+            int m = x.RowsNumber;
+            int n = x.ColsNumber;
+            var yy = new Vector<double>(m);
+
+            for (var i = 0; i < m; i++)
+            {
+                double y = 0; 
+                for (var j = 0; j < n; j++)
+                {
+                    y += betas[j] * x[i, j];
+                }
+
+                yy[i] = y;
+            }
+
+            return yy;
         }
 
         // http://reliawiki.org/index.php/Multiple_Linear_Regression_Analysis
