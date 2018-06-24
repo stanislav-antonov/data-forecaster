@@ -1,6 +1,0 @@
-C:\Sources\data-forecaster\DataForecaster\bin\Debug\DataForecaster.exe.config
-C:\Sources\data-forecaster\DataForecaster\bin\Debug\DataForecaster.exe
-C:\Sources\data-forecaster\DataForecaster\bin\Debug\DataForecaster.pdb
-C:\Sources\data-forecaster\DataForecaster\obj\Debug\DataForecaster.csprojResolveAssemblyReference.cache
-C:\Sources\data-forecaster\DataForecaster\obj\Debug\DataForecaster.exe
-C:\Sources\data-forecaster\DataForecaster\obj\Debug\DataForecaster.pdb
