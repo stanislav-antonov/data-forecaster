@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DataForecaster
 {
-    public class Matrix<T> where T : IComparable<T>
+    public class Matrix<T> : ICloneable where T : IComparable<T>
     {
         // m - rows total
         // n - columns total
@@ -26,11 +24,7 @@ namespace DataForecaster
         {
             if (!typeof(T).IsPrimitive)
                 throw new InvalidOperationException("Primitive type is expected");
-
-            if (matrix == null)
-                throw new ArgumentNullException(nameof(matrix));
-
-            _matrix = matrix;
+            _matrix = matrix.Clone() as T[,] ?? throw new ArgumentNullException(nameof(matrix));
         }
 
         public T this[int i, int j]
@@ -126,71 +120,35 @@ namespace DataForecaster
             return result;
         }
 
-        public void SwapRows(int i1, int i2)
-        {
-            for (var j = 0; j < ColsNumber; ++j)
-            {
-                T temp = _matrix[i2, j];
-                _matrix[i2, j] = _matrix[i1, j];
-                _matrix[i1, j] = temp;
-            }
-        }
-
-        // Use Gaussian elimination approach
-        // https://en.wikipedia.org/wiki/Gaussian_elimination
         public Matrix<double> Inverse()
         {
-            int h = 0, k = 0;
-            int m = RowsNumber;
-            int n = ColsNumber;
+            // assumes determinant is not 0
+            // that is, the matrix does have an inverse
+            var n = ColsNumber;
+            var result = Clone() as Matrix<double>;
+            var toggle = result.CroutProcess(out Matrix<double> lum, out int[] perm);
 
-            var inversed = (double[,])Convert.ChangeType(_matrix.Clone(), typeof(double[,]));
-
-            while (h < m && k < n)
+            double[] b = new double[n];
+            for (int i = 0; i < n; ++i)
             {
-                int iMax = ArgMax(h, m - 1, k, inversed);
-                if (inversed[iMax, k] == 0)
+                for (int j = 0; j < n; ++j)
                 {
-                    k++;
+                    b[j] = (i == perm[j]) ? 1.0 : 0.0;
                 }
-                else
+                    
+                double[] x = lum.CourtProcessHelper(b);
+                for (int j = 0; j < n; ++j)
                 {
-                    SwapRows(h, iMax);
-
-                    for (var i = h + 1; i < m; i++)
-                    {
-                        double f = inversed[i, k] / inversed[h, k];
-                        inversed[i, k] = 0;
-
-                        for (var j = k + 1; j < n; j++)
-                        {
-                            inversed[i, j] = inversed[i, j] - inversed[h, j] * f;
-                        }
-                    }
-
-                    h++; k++;
+                    result[j, i] = x[j];
                 }
             }
 
-            return new Matrix<double>(inversed);
+            return result;
         }
 
-        private int ArgMax(int iFrom, int iTo, int j, double[,] matrix)
+        public object Clone()
         {
-            var iMax = iFrom;
-            var max = Math.Abs(matrix[iMax, j]);
-
-            for (var i = iFrom + 1; i <= iTo; i++)
-            {
-                var candidate = Math.Abs(matrix[i, j]);
-                if (candidate > max)
-                {
-                    max = candidate;
-                    iMax = i;
-                }
-            }
-
-            return iMax;
+            return new Matrix<T>(_matrix);
         }
     }
 }

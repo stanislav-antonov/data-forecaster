@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Approach\LinearRegression.cs" />
     <Compile Include="Math\Matrix.cs" />
+    <Compile Include="Math\MatrixLuDecomposition.cs" />
     <Compile Include="Math\MatrixQrDecomposition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
