@@ -39,7 +39,9 @@ namespace DataForecaster
             var result = new T[rowsNumber];
 
             for (int i = 0; i < rowsNumber; i++)
+            {
                 result[i] = _matrix[i, j];
+            }
 
             return result;
         }
@@ -86,17 +88,17 @@ namespace DataForecaster
         {
             int m = RowsNumber;
             int n = ColsNumber;
-            
-            T[,] transposed = new T[n, m];
+            T[,] result = new T[n, m];
+
             for (int i = 0; i < m; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
-                    transposed[j, i] = _matrix[i, j];
+                    result[j, i] = _matrix[i, j];
                 }
             }
 
-            return new Matrix<T>(transposed);
+            return new Matrix<T>(result);
         }
 
         // https://mathinsight.org/matrix_vector_multiplication
@@ -120,15 +122,44 @@ namespace DataForecaster
             return result;
         }
 
+        // https://mathinsight.org/matrix_vector_multiplication
+        public static Matrix<double> operator *(Matrix<T> matrixA, Matrix<T> matrixB)
+        {
+            int aRowsNumber = matrixA.RowsNumber;
+            int aColsNumber = matrixA.ColsNumber;
+            int bRowsNumber = matrixB.RowsNumber;
+            int bColsNumber = matrixB.ColsNumber;
+
+            if (aColsNumber != bRowsNumber)
+            {
+                throw new Exception("Non-conformable matrices");
+            }
+
+            var result = new Matrix<double>(aRowsNumber, bColsNumber);
+
+            for (int i = 0; i < aRowsNumber; ++i) // each row of A
+            {
+                for (int j = 0; j < bColsNumber; ++j) // each col of B
+                {
+                    for (int k = 0; k < aColsNumber; ++k)
+                    {
+                        result[i, j] += Convert.ToDouble(matrixA[i, k]) * Convert.ToDouble(matrixB[k, j]);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public Matrix<double> Inverse()
         {
             // assumes determinant is not 0
             // that is, the matrix does have an inverse
-            var n = ColsNumber;
+            int n = ColsNumber;
             var result = Clone() as Matrix<double>;
-            var toggle = result.CroutProcess(out Matrix<double> lum, out int[] perm);
-
+            int toggle = result.CroutProcess(out Matrix<double> lum, out int[] perm);
             double[] b = new double[n];
+
             for (int i = 0; i < n; ++i)
             {
                 for (int j = 0; j < n; ++j)
@@ -141,6 +172,38 @@ namespace DataForecaster
                 {
                     result[j, i] = x[j];
                 }
+            }
+
+            return result;
+        }
+
+        public double Determinant()
+        {
+            int toggle = (this as Matrix<double>).CroutProcess(out Matrix<double> lum, out int[] perm);
+            double result = toggle;
+
+            for (int i = 0; i < lum.RowsNumber; ++i)
+            {
+                result *= lum[i, i];
+            }
+
+            return result;
+        }
+
+        public override string ToString()
+        {
+            int m = RowsNumber;
+            int n = ColsNumber;
+            string result = "";
+
+            for (int i = 0; i < m; ++i)
+            {
+                for (int j = 0; j < n; ++j)
+                {
+                    result += _matrix[i, j].ToString().PadLeft(8) + " ";
+                }
+                    
+                result += Environment.NewLine;
             }
 
             return result;
