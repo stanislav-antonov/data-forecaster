@@ -101,6 +101,57 @@ namespace DataForecaster
             return new Matrix<T>(result);
         }
 
+        public static Matrix<double> operator -(Matrix<T> matrixA, Matrix<T> matrixB)
+        {
+            int m = matrixA.RowsNumber;
+            int n = matrixB.ColsNumber;
+            var result = new Matrix<double>(m, n);
+
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    result[i, j] = Convert.ToDouble(matrixA[i, j]) - Convert.ToDouble(matrixB[i, j]);
+                }
+            }
+
+            return result;
+        }
+
+        public static Matrix<double> operator /(Matrix<T> matrix, double value)
+        {
+            int m = matrix.RowsNumber;
+            int n = matrix.ColsNumber;
+            var result = new Matrix<double>(m, n);
+
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    result[i, j] = Convert.ToDouble(matrix[i, j]) / value;
+                }
+            }
+
+            return result;
+        }
+
+        public static Matrix<double> operator *(Matrix<T> matrix, double value)
+        {
+            int m = matrix.RowsNumber;
+            int n = matrix.ColsNumber;
+            var result = new Matrix<double>(m, n);
+
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    result[i, j] = Convert.ToDouble(matrix[i, j]) * value;
+                }
+            }
+
+            return result;
+        }
+
         // https://mathinsight.org/matrix_vector_multiplication
         public static Vector<double> operator *(Matrix<T> matrix, Vector<T> vector)
         {
@@ -188,6 +239,33 @@ namespace DataForecaster
             }
 
             return result;
+        }
+
+        public void Fill(T value)
+        {
+            int m = RowsNumber;
+            int n = ColsNumber;
+
+            for (var i = 0; i < m; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
+                    this[i, j] = value;
+                }
+            }
+        }
+
+        public void FillAsIdentity()
+        {
+            int n = ColsNumber;
+
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
+                    (this as Matrix<double>)[i, j] = (i == j) ? 1 : 0;
+                }
+            }
         }
 
         public override string ToString()

@@ -21,14 +21,14 @@ namespace Tests
                 { 1, 47.9, 30.5 },
                 { 1, 50.2, 30.7 },
                 { 1, 52.8, 30.8 },
-                { 1, 53.4, 30.9 },
+                { 1, 53.2, 30.9 },
                 { 1, 56.7, 31.5 },
                 { 1, 57.0, 31.7 },
-                { 1, 57.0, 31.9 },
-                { 1, 57.0, 32.0 },
-                { 1, 57.0, 32.1 },
-                { 1, 57.0, 32.5 },
-                { 1, 57.0, 32.9 },
+                { 1, 63.5, 31.9 },
+                { 1, 65.3, 32.0 },
+                { 1, 77.1, 32.1 },
+                { 1, 77.0, 32.5 },
+                { 1, 77.8, 32.9 },
             });
 
             var y = new Vector<double>(new double[] {
@@ -55,6 +55,8 @@ namespace Tests
             var betas = linearRegression.ComputeBetas(x, y);
 
             var yy = linearRegression.Fit(x, betas);
+
+            var h = linearRegression.SignificanceTest(x, y);
         }
     }
 }

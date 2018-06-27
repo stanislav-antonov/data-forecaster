@@ -51,9 +51,44 @@ namespace DataForecaster.Approach
         }
 
         // http://reliawiki.org/index.php/Multiple_Linear_Regression_Analysis
-        public void SignificanceTest()
+        // https://math.stackexchange.com/questions/80848/calculate-p-value
+        // http://www.statsoft.com/Textbook/Distribution-Tables
+        // http://users.stat.ufl.edu/~athienit/Tables/tables
+        public Matrix<double> SignificanceTest(Matrix<double> x, Vector<double> y)
         {
+            var X = x.Clone() as Matrix<double>;
+            var Xt = X.Transpose();
+            var XtXi = (Xt * X).Inverse();
 
+            // the hat matrix
+            var H = X * XtXi * Xt;
+            
+            // total number of observations
+            var n = X.RowsNumber;
+
+            // number of predictor variables (x)
+            // - 1 is needed because a first column of X matrix is for b0 and should not be counted
+            var k = X.ColsNumber - 1;
+
+            // matrix of ones
+            var J = new Matrix<double>(n, n);
+            J.Fill(1);
+
+            // regression of sum squares
+            var SSr = y * ((H - (J * 1 / n)) * y);
+
+            // identity matrix
+            var I = new Matrix<double>(n, n);
+            I.FillAsIdentity();
+
+            // error sum of squares
+            var SSe = y * ((I - H) * y);
+            var MSe = SSe / (n - (k + 1));
+
+            // the variance-covariance matrix of the estimated regression 
+            // var C = 
+            
+            return H;
         }
     }
 }
