@@ -56,7 +56,7 @@ namespace Tests
 
             var yy = linearRegression.Fit(x, betas);
 
-            var h = linearRegression.SignificanceTest(x, y);
+            var h = linearRegression.SignificanceTest(x, y, betas);
         }
     }
 }
