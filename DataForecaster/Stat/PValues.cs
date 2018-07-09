@@ -602,7 +602,9 @@ namespace DataForecaster
                 }
             }
 
-            return result;
+            // Should it really be multiplied on 2?
+            // For two-sided symmetric distribution seems like should be.
+            return result * 2;
         }
     }
 }
