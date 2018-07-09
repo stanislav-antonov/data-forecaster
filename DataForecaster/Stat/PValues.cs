@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataForecaster
 {
@@ -10,22 +7,38 @@ namespace DataForecaster
     {
         private class PValuesRange
         {
-            private readonly int degreesFreedomMin;
-            private readonly int degreesFreedomMax;
+            public double[] Alphas { get; }
+            public double[,] PValues { get; }
+            public int[] DegreesFreedom { get; }
 
-            private readonly double[] alphas;
-            private readonly double[,] pValues;
+            public int DegreesFreedomMin => DegreesFreedom.First();
+            public int DegreesFreedomMax => DegreesFreedom.Last();
 
-            public PValuesRange(int degreesFreedomMin, int degreesFreedomMax, double[] alphas, double[,] pValues)
+            public PValuesRange(double[] alphas, double[,] pValues, int[] dfs)
             {
-                this.degreesFreedomMin = degreesFreedomMin;
-                this.degreesFreedomMax = degreesFreedomMax;
-                this.alphas = alphas;
-                this.pValues = pValues;
+                Alphas = alphas;
+                PValues = pValues;
+                DegreesFreedom = dfs;
             }
         }
 
-        private static readonly double[,] pValues_1_12 = {
+        private static readonly int[] dfs1 = 
+        {
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+        };
+
+        private static readonly double[,] pValues1 = {
             {  0.209,  0.162,  0.142,  0.132,  0.125,  0.121,  0.117,  0.115,  0.113,  0.111,  0.11,   0.109  },
             {  0.206,  0.159,  0.139,  0.129,  0.122,  0.117,  0.114,  0.112,  0.11 ,  0.108,  0.107,  0.106  },
             {  0.204,  0.156,  0.136,  0.126,  0.119,  0.114,  0.111,  0.109,  0.107,  0.105,  0.104,  0.103  },
@@ -103,7 +116,7 @@ namespace DataForecaster
             {  0.078,  0.029,  0.014,  0.008,  0.005,  0.004,  0.003,  0.002,  0.002,  0.001,  0.001,  0.0007 },
         };
 
-        private static readonly double[] alphas_1_12 = {
+        private static readonly double[] alphas1 = {
             1.3 ,
             1.32,
             1.34,
@@ -181,7 +194,23 @@ namespace DataForecaster
             4   ,
         };
 
-        private static readonly double[,] pValues_13_24 = {
+        private static readonly int[] dfs2 = 
+        {
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+        };
+
+        private static readonly double[,] pValues2 = {
             {  0.108,  0.107,  0.107,  0.106,  0.105,  0.105,  0.105,  0.104,  0.104,  0.104,  0.103,  0.103 },
             {  0.105,  0.104,  0.103,  0.103,  0.102,  0.102,  0.101,  0.101,  0.101,  0.1  ,  0.1  ,  0.1   },
             {  0.102,  0.101,  0.1  ,  0.099,  0.099,  0.098,  0.098,  0.098,  0.097,  0.097,  0.097,  0.096 },
@@ -259,7 +288,7 @@ namespace DataForecaster
             {  0.002,  0.002,  0.002,  0.001,  0.001,  0.001,  0.001,  0.001,  0.001,  0.001,  0.0005, 0.0005},
         };
 
-        private static readonly double[] alphas_13_24 = {
+        private static readonly double[] alphas2 = {
             1.3 ,
             1.32,
             1.34,
@@ -337,7 +366,23 @@ namespace DataForecaster
             3.5 ,
         };
 
-        private static readonly double[,] pValues_25_inf = {
+        private static readonly int[] dfs3 = 
+        {
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            40,
+            50,
+            60,
+            80,
+            100,
+            int.MaxValue,
+        };
+
+        private static readonly double[,] pValues3 = {
             { 0.103,   0.103,   0.102,   0.102,   0.102 ,  0.102 ,  0.101 ,  0.1   ,  0.099 ,  0.099 ,  0.098,   0.097  },
             { 0.099,   0.099,   0.099,   0.099,   0.099 ,  0.098 ,  0.097 ,  0.096 ,  0.096 ,  0.095 ,  0.095 ,  0.093  },
             { 0.096,   0.096,   0.096,   0.096,   0.095 ,  0.095 ,  0.094 ,  0.093 ,  0.093 ,  0.092 ,  0.092 ,  0.09   },
@@ -414,7 +459,7 @@ namespace DataForecaster
             { 0.001,   0.001,   0.001,   0.001,   0.0005,  0.0005,  0.0005,  0.0005,  0.0005,  0.0005,  0.0005,  0.0005 },
         };
 
-        private static readonly double[] alphas_25_inf = {
+        private static readonly double[] alphas3 = {
             1.3 ,
             1.32,
             1.34,
@@ -491,15 +536,68 @@ namespace DataForecaster
             3.4 ,
         };
 
-        private static readonly PValuesRange[] pValues = {
-            new PValuesRange(1, 12, alphas_1_12, pValues_1_12),
-            new PValuesRange(13, 24, alphas_13_24, pValues_13_24),
-            new PValuesRange(25, int.MaxValue, alphas_25_inf, pValues_25_inf),
+        private static readonly PValuesRange[] pValuesRanges = {
+            new PValuesRange(alphas1, pValues1, dfs1),
+            new PValuesRange(alphas2, pValues2, dfs2),
+            new PValuesRange(alphas3, pValues3, dfs3),
         };
 
         public static double Value(int df, double alpha)
         {
-            return 0;
+            var pValuesRange = pValuesRanges.SingleOrDefault(r => r.DegreesFreedomMax >= df && r.DegreesFreedomMin <= df);
+
+            int row = -1;
+            var alphas = pValuesRange.Alphas;
+            
+            for (var i = 0; i < alphas.Length; i++)
+            {
+                if (alphas[i] >= alpha)
+                {
+                    row = i;
+                    break;
+                }
+            }
+
+            if (row == -1)
+            {
+                throw new InvalidOperationException();
+            }
+
+            double result = 0;
+            var dfs = pValuesRange.DegreesFreedom;
+
+            if (dfs.Contains(df))
+            {
+                var col = Array.IndexOf(dfs, df);
+                result = pValuesRange.PValues[row, col];
+            }
+            else
+            {
+                for (int i = 0; i < dfs.Length - 1; i++)
+                {
+                    var df1 = dfs[i];
+                    var df2 = dfs[i + 1];
+
+                    if (df > df1 && df < df2)
+                    {
+                        // calculate linear equation
+                        var col1 = Array.IndexOf(dfs, df1);
+                        var p1 = pValuesRange.PValues[row, col1];
+
+                        var col2 = Array.IndexOf(dfs, df2);
+                        var p2 = pValuesRange.PValues[row, col2];
+
+                        var k = (p2 - p1) / (df2 - df1);
+                        var b = p1 - k * df1;
+
+                        result = k * df + b;
+
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
