@@ -12,9 +12,9 @@ namespace DataForecaster
             _0005 = 2
         }
 
-        private static readonly Dictionary<int, double>[] distributions = {
+        private static readonly SortedDictionary<int, double>[] distributions = {
             // For alpha = .005
-            new Dictionary<int, double>()
+            new SortedDictionary<int, double>()
             {
                 [1] = 63.657,
                 [2] = 9.925,
@@ -73,7 +73,7 @@ namespace DataForecaster
             }
             else
             {
-                var dfs = distribution.Keys.OrderBy(k => k).ToArray();
+                var dfs = distribution.Keys.ToArray();
                 for (int i = 0; i < dfs.Length - 1; i++)
                 {
                     var df1 = dfs[i];
@@ -89,6 +89,8 @@ namespace DataForecaster
                         var b = d1 - k * df1;
 
                         result = k * df + b;
+
+                        break;
                     }
                 }
             }
