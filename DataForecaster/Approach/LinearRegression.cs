@@ -95,7 +95,7 @@ namespace DataForecaster.Approach
 
             // boundaries of acceptance region
             // -t < tBeta < t
-            var t = StudentTDistribution.Value(df, StudentTDistribution.Alpha._005);
+            var t = StudentTDistribution.Value(df, StudentTDistribution.Alpha._05);
 
             // Compute test statistics for betas
             // Start from [1, 1] element in C matrix skipping [0, 0] element since it contains the value for b0
