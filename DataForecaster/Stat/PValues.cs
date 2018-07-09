@@ -7,16 +7,16 @@ namespace DataForecaster
     {
         private class PValuesRange
         {
-            public double[] Alphas { get; }
+            public double[]  TValues { get; }
             public double[,] PValues { get; }
             public int[] DegreesFreedom { get; }
 
             public int DegreesFreedomMin => DegreesFreedom.First();
             public int DegreesFreedomMax => DegreesFreedom.Last();
 
-            public PValuesRange(double[] alphas, double[,] pValues, int[] dfs)
+            public PValuesRange(double[] tValues, double[,] pValues, int[] dfs)
             {
-                Alphas = alphas;
+                TValues = tValues;
                 PValues = pValues;
                 DegreesFreedom = dfs;
             }
@@ -116,7 +116,7 @@ namespace DataForecaster
             {  0.078,  0.029,  0.014,  0.008,  0.005,  0.004,  0.003,  0.002,  0.002,  0.001,  0.001,  0.0007 },
         };
 
-        private static readonly double[] alphas1 = {
+        private static readonly double[] tValues1 = {
             1.3 ,
             1.32,
             1.34,
@@ -288,7 +288,7 @@ namespace DataForecaster
             {  0.002,  0.002,  0.002,  0.001,  0.001,  0.001,  0.001,  0.001,  0.001,  0.001,  0.0005, 0.0005},
         };
 
-        private static readonly double[] alphas2 = {
+        private static readonly double[] tValues2 = {
             1.3 ,
             1.32,
             1.34,
@@ -459,7 +459,7 @@ namespace DataForecaster
             { 0.001,   0.001,   0.001,   0.001,   0.0005,  0.0005,  0.0005,  0.0005,  0.0005,  0.0005,  0.0005,  0.0005 },
         };
 
-        private static readonly double[] alphas3 = {
+        private static readonly double[] tValues3 = {
             1.3 ,
             1.32,
             1.34,
@@ -537,21 +537,26 @@ namespace DataForecaster
         };
 
         private static readonly PValuesRange[] pValuesRanges = {
-            new PValuesRange(alphas1, pValues1, dfs1),
-            new PValuesRange(alphas2, pValues2, dfs2),
-            new PValuesRange(alphas3, pValues3, dfs3),
+            new PValuesRange(tValues1, pValues1, dfs1),
+            new PValuesRange(tValues2, pValues2, dfs2),
+            new PValuesRange(tValues3, pValues3, dfs3),
         };
 
-        public static double Value(int df, double alpha)
+        public static double Value(int df, double tValue)
         {
             var pValuesRange = pValuesRanges.SingleOrDefault(r => r.DegreesFreedomMax >= df && r.DegreesFreedomMin <= df);
 
-            int row = -1;
-            var alphas = pValuesRange.Alphas;
-            
-            for (var i = 0; i < alphas.Length; i++)
+            if (pValuesRange == null)
             {
-                if (alphas[i] >= alpha)
+                throw new ArgumentOutOfRangeException($"{ nameof(df) }: { df }");
+            }
+
+            int row = -1;
+            var tValues = pValuesRange.TValues;
+            
+            for (var i = 0; i < tValues.Length; i++)
+            {
+                if (tValues[i] >= tValue)
                 {
                     row = i;
                     break;
@@ -560,7 +565,7 @@ namespace DataForecaster
 
             if (row == -1)
             {
-                throw new InvalidOperationException();
+                throw new ArgumentOutOfRangeException($"{ nameof(tValue) }: { tValue }");
             }
 
             double result = 0;
@@ -582,13 +587,13 @@ namespace DataForecaster
                     {
                         // calculate linear equation
                         var col1 = Array.IndexOf(dfs, df1);
-                        var p1 = pValuesRange.PValues[row, col1];
+                        var pValue1 = pValuesRange.PValues[row, col1];
 
                         var col2 = Array.IndexOf(dfs, df2);
-                        var p2 = pValuesRange.PValues[row, col2];
+                        var pValue2 = pValuesRange.PValues[row, col2];
 
-                        var k = (p2 - p1) / (df2 - df1);
-                        var b = p1 - k * df1;
+                        var k = (pValue2 - pValue1) / (df2 - df1);
+                        var b = pValue1 - k * df1;
 
                         result = k * df + b;
 
