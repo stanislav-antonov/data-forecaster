@@ -11,6 +11,12 @@ namespace DataForecaster
             _005 = 1,
         }
 
+        private static readonly double[] alphaValue = 
+        {
+            0.05,
+            0.005,
+        }; 
+
         // http://users.stat.ufl.edu/~athienit/Tables/tables
         private static readonly SortedDictionary<int, double>[] distributions = {
             // For alpha = .05
@@ -109,6 +115,11 @@ namespace DataForecaster
                 [int.MaxValue] = 2.576
             }
         };
+
+        public static double AlphaValue(Alpha alpha)
+        {
+            return alphaValue[(int)alpha];
+        }
 
         public static double Value(int df, Alpha alpha)
         {

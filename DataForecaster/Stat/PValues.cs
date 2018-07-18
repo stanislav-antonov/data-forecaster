@@ -565,7 +565,8 @@ namespace DataForecaster
 
             if (row == -1)
             {
-                throw new ArgumentOutOfRangeException($"{ nameof(tValue) }: { tValue }");
+                // Just pick up last row
+                row = tValues.Length - 1;
             }
 
             double result = 0;
