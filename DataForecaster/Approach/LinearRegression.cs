@@ -27,11 +27,15 @@ namespace DataForecaster.Approach
                 IsSignificant = isSignificant;
             }
         }
-        
+
+        private Vector<double> Coefficients { get; set; }
+        private Vector<double> ResponseVariables { get; set; }
+        private Matrix<double> PredictorVariables { get; set; }
+
         // https://rstudio-pubs-static.s3.amazonaws.com/251311_c8970d1f1a8541aaa5884d86b1487ea6.html
         // x - design matrix (independent input parameters aka predictor variables)
         // y - vector of observations according to input parameters
-        public Vector<double> Fit(Matrix<double> x, Vector<double> y)
+        public void Fit(Matrix<double> x, Vector<double> y)
         {
             // should I add a column of ones at the first position to compute beta0?
 
@@ -43,12 +47,13 @@ namespace DataForecaster.Approach
             var qt = q.Transpose();
             var qb = qt * y;
             var ri = r.Inverse();
-            var betas = ri * qb;
 
-            return betas;
+            Coefficients = ri * qb;
+            PredictorVariables = x;
+            ResponseVariables = y;
         }
 
-        public Vector<double> Predict(Matrix<double> x, Vector<double> betas)
+        public Vector<double> Predict(Matrix<double> x)
         {
             int m = x.RowsNumber;
             int n = x.ColsNumber;
@@ -59,7 +64,7 @@ namespace DataForecaster.Approach
                 double y = 0;
                 for (var j = 0; j < n; j++)
                 {
-                    y += betas[j] * x[i, j];
+                    y += Coefficients[j] * x[i, j];
                 }
 
                 yy[i] = y;
@@ -77,16 +82,18 @@ namespace DataForecaster.Approach
 
             while (!finalModelFound && x.ColsNumber > 0)
             {
-                var betas = Fit(x, y);
-                var significance = SignificanceTest(x, y, betas);
-
+                Fit(x, y);
                 finalModelFound = true;
+
+                var significance = SignificanceTest(x, y);
+
                 foreach (var s in significance)
                 {
                     if (!s.IsSignificant)
                     {
                         // remove the respective predictor
                         x.RemoveColumn(s.Index);
+                        Coefficients.RemoveAt(s.Index);
                         finalModelFound = false;
                     }
                 }
@@ -99,7 +106,7 @@ namespace DataForecaster.Approach
         // https://math.stackexchange.com/questions/80848/calculate-p-value
         // http://www.statsoft.com/Textbook/Distribution-Tables
         // http://users.stat.ufl.edu/~athienit/Tables/tables
-        public List<SignificanceResult> SignificanceTest(Matrix<double> x, Vector<double> y, Vector<double> betas)
+        public List<SignificanceResult> SignificanceTest(Matrix<double> x, Vector<double> y)
         {
             var X = x.Clone() as Matrix<double>;
             var Xt = X.Transpose();
@@ -150,7 +157,7 @@ namespace DataForecaster.Approach
             // Note that [0, 0] element contains the b0 value (means very first beat with no predictor)
             for (var i = 0; i < C.ColsNumber; i++)
             {
-                double beta = betas[i];
+                double beta = Coefficients[i];
 
                 // Compute test statistic for beta
                 double tBeta = beta / Math.Sqrt(C[i, i]);

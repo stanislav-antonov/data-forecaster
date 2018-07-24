@@ -7,7 +7,7 @@ namespace DataForecaster
 {
     public class Vector<T> : IEnumerable<T>, ICloneable where T : IComparable<T>
     {
-        private readonly T[] _vector;
+        private T[] _vector;
 
         public int Length => _vector.Length;
 
@@ -97,6 +97,13 @@ namespace DataForecaster
         public object Clone()
         {
             return new Vector<T>(_vector);
+        }
+
+        public void RemoveAt(int index)
+        {
+            var list = _vector.ToList();
+            list.RemoveAt(index);
+            _vector = list.ToArray(); 
         }
     }
 }
