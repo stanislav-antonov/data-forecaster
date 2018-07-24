@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="MatrixQrDecompositionTests.cs" />
     <Compile Include="LinearRegressionTests.cs" />
+    <Compile Include="MatrixTests.cs" />
     <Compile Include="VectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

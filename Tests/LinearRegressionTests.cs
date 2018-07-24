@@ -52,9 +52,9 @@ namespace Tests
             });
 
             var linearRegression = new LinearRegression();
-            var betas = linearRegression.ComputeBetas(x, y);
+            var betas = linearRegression.Fit(x, y);
 
-            var yy = linearRegression.Fit(x, betas);
+            var yy = linearRegression.Predict(x, betas);
 
             var h = linearRegression.SignificanceTest(x, y, betas);
         }

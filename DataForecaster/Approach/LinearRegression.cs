@@ -31,7 +31,7 @@ namespace DataForecaster.Approach
         // https://rstudio-pubs-static.s3.amazonaws.com/251311_c8970d1f1a8541aaa5884d86b1487ea6.html
         // x - design matrix (independent input parameters aka predictor variables)
         // y - vector of observations according to input parameters
-        public Vector<double> ComputeBetas(Matrix<double> x, Vector<double> y)
+        public Vector<double> Fit(Matrix<double> x, Vector<double> y)
         {
             // should I add a column of ones at the first position to compute beta0?
 
@@ -48,7 +48,7 @@ namespace DataForecaster.Approach
             return betas;
         }
 
-        public Vector<double> Fit(Matrix<double> x, Vector<double> betas)
+        public Vector<double> Predict(Matrix<double> x, Vector<double> betas)
         {
             int m = x.RowsNumber;
             int n = x.ColsNumber;
@@ -56,7 +56,7 @@ namespace DataForecaster.Approach
 
             for (var i = 0; i < m; i++)
             {
-                double y = 0; 
+                double y = 0;
                 for (var j = 0; j < n; j++)
                 {
                     y += betas[j] * x[i, j];
@@ -66,6 +66,33 @@ namespace DataForecaster.Approach
             }
 
             return yy;
+        }
+
+        // Step-wise building process
+        //
+        public Matrix<double> BuildModel(Matrix<double> x, Vector<double> y)
+        {
+            bool finalModelFound = false;
+            x = x.Clone() as Matrix<double>;
+
+            while (!finalModelFound && x.ColsNumber > 0)
+            {
+                var betas = Fit(x, y);
+                var significance = SignificanceTest(x, y, betas);
+
+                finalModelFound = true;
+                foreach (var s in significance)
+                {
+                    if (!s.IsSignificant)
+                    {
+                        // remove the respective predictor
+                        x.RemoveColumn(s.Index);
+                        finalModelFound = false;
+                    }
+                }
+            }
+
+            return x;
         }
 
         // http://reliawiki.org/index.php/Multiple_Linear_Regression_Analysis

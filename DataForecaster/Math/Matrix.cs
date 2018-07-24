@@ -268,6 +268,27 @@ namespace DataForecaster
             }
         }
 
+        public void RemoveColumn(int jj)
+        {
+            int m = RowsNumber;
+            int n = ColsNumber;
+            var result = new T[m, n - 1];
+
+            for (int i = 0; i < m; ++i)
+            {
+                var _j = 0;
+                for (int j = 0; j < n; ++j)
+                {
+                    if (jj != j)
+                    {
+                        result[i, _j++] = _matrix[i, j];
+                    }
+                }
+            }
+
+            _matrix = result;
+        }
+
         public override string ToString()
         {
             int m = RowsNumber;
