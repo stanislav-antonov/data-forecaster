@@ -99,7 +99,7 @@ namespace DataForecaster
             return new Vector<T>(_vector);
         }
 
-        public void RemoveAt(int index)
+        public void Remove(int index)
         {
             var list = _vector.ToList();
             list.RemoveAt(index);

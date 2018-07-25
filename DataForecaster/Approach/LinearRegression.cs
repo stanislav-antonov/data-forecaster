@@ -31,6 +31,8 @@ namespace DataForecaster.Approach
         private Vector<double> Coefficients { get; set; }
         private Vector<double> ResponseVariables { get; set; }
         private Matrix<double> PredictorVariables { get; set; }
+        private ISet<int> UnsignificantPredictorIndexes { get; set; }
+
 
         // https://rstudio-pubs-static.s3.amazonaws.com/251311_c8970d1f1a8541aaa5884d86b1487ea6.html
         // x - design matrix (independent input parameters aka predictor variables)
@@ -75,31 +77,54 @@ namespace DataForecaster.Approach
 
         // Step-wise building process
         //
-        public Matrix<double> BuildModel(Matrix<double> x, Vector<double> y)
+        public void BuildModel(Matrix<double> x, Vector<double> y)
         {
             bool finalModelFound = false;
-            x = x.Clone() as Matrix<double>;
+            var predictors = x.Clone() as Matrix<double>;
+            var coefficients = Coefficients.Clone() as Vector<double>;
 
-            while (!finalModelFound && x.ColsNumber > 0)
+            // newIndex -> originalIndex
+            var indexMap = new Dictionary<int, int>();
+            for (int i = 0; i < predictors.ColsNumber; i++)
             {
-                Fit(x, y);
+                indexMap.Add(i, i);
+            }
+
+            var indexMapKeys = indexMap.Keys.OrderBy(_ => _);
+
+            while (!finalModelFound && predictors.ColsNumber > 0)
+            {
+                Fit(predictors, y);
                 finalModelFound = true;
 
-                var significance = SignificanceTest(x, y);
+                var significance = SignificanceTest(predictors, y);
 
                 foreach (var s in significance)
                 {
                     if (!s.IsSignificant)
                     {
                         // remove the respective predictor
-                        x.RemoveColumn(s.Index);
-                        Coefficients.RemoveAt(s.Index);
+                        var index = s.Index;
+
+                        predictors.RemoveColumn(index);
+                        coefficients.Remove(index);
+
+                        // Do shifting
+                        foreach (var key in indexMapKeys.Where(_ => _ >= index).ToList())
+                        {
+                            if (indexMap.ContainsKey(key + 1))
+                            {
+                                indexMap[key] = indexMap[key + 1];
+                            }
+                        }
+
+                        var maxKey = indexMapKeys.Last();
+                        indexMap.Remove(maxKey);
+
                         finalModelFound = false;
                     }
                 }
             }
-
-            return x;
         }
 
         // http://reliawiki.org/index.php/Multiple_Linear_Regression_Analysis
