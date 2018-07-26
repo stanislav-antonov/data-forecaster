@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataForecaster.Approach
 {
@@ -101,30 +99,37 @@ namespace DataForecaster.Approach
 
                 foreach (var s in significance)
                 {
-                    if (!s.IsSignificant)
+                    if (s.IsSignificant)
                     {
-                        // remove the respective predictor
-                        var index = s.Index;
-
-                        predictors.RemoveColumn(index);
-                        coefficients.Remove(index);
-
-                        // Do shifting
-                        foreach (var key in indexMapKeys.Where(_ => _ >= index).ToList())
-                        {
-                            if (indexMap.ContainsKey(key + 1))
-                            {
-                                indexMap[key] = indexMap[key + 1];
-                            }
-                        }
-
-                        var maxKey = indexMapKeys.Last();
-                        indexMap.Remove(maxKey);
-
-                        finalModelFound = false;
+                        // Nothing to do with significant predictor
+                        continue;
                     }
+
+                    var index = s.Index;
+
+                    // remove the respective unsignificant predictor and coefficient
+                    predictors.RemoveColumn(index);
+                    coefficients.Remove(index);
+
+                    ShiftIndexes(indexMap, indexMapKeys, index);
+
+                    finalModelFound = false;
                 }
             }
+        }
+
+        private void ShiftIndexes(IDictionary<int, int> indexMap, IOrderedEnumerable<int> indexMapKeys, int index)
+        {
+            foreach (var key in indexMapKeys.Where(_ => _ >= index).ToList())
+            {
+                if (indexMap.ContainsKey(key + 1))
+                {
+                    indexMap[key] = indexMap[key + 1];
+                }
+            }
+
+            var maxKey = indexMapKeys.Last();
+            indexMap.Remove(maxKey);
         }
 
         // http://reliawiki.org/index.php/Multiple_Linear_Regression_Analysis
